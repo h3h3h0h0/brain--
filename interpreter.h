@@ -9,12 +9,12 @@ using namespace std;
 
 class BFMInterpreter {
     string program;
-    void _run(istream in, ostream out, string prog); //the public run method calls this, which will be threaded
+    void _run(istream &in, ostream &out, string prog, bool debug); //the public run method calls this, which will be threaded
     public:
         BFMInterpreter();
         ~BFMInterpreter();
         void load(string prog);
         void loadFile(string fn);
-        void run(istream in, ostream out);
+        void run(istream &in, ostream &out, bool debug=false);
         void stop();
 };
