@@ -13,7 +13,7 @@ using namespace std;
 class BFMInterpreter {
     string program = "";
     pthread_t thr;
-    std::atomic<std::bool> running(0);
+    std::atomic_bool running;
     void _run(istream &in, ostream &out, string prog, bool debug); //the public run method calls this, which will be threaded
     public:
         BFMInterpreter();
