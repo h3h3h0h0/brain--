@@ -1,7 +1,14 @@
 #pragma once
 #include "cell.h"
 
-Cell::Cell(Cell* p, char v=0): parent{p}, value{v}, at{-1} {} //at is initialized to -1 to signify that the internal register is empty
+Cell::Cell(Cell* p, bool palloc=false): parent{p}, value{0}, at{-1} { //at is initialized to -1 to signify that the internal register is empty
+    if(palloc) { //the "outer dummy" which is initialized to 30k
+        for(int i = 0; i < presize; i++) {
+            _allocate();
+        }
+        at = 0;
+    }
+} 
 
 Cell::~Cell() {
     while (!mem.empty()) {

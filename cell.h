@@ -4,6 +4,7 @@
 using namespace std;
 
 class Cell {
+    const int presize = 30000; //prealloc size
     //value stored within cell itself
     char value;
     //cells considered to be "inside" current cell
@@ -17,7 +18,7 @@ class Cell {
     void _allocate(); //these should only be called by the outer container! being outside ensures the pointer is set to the start
     void _deallocate();
     public:
-        Cell(Cell* p, char v=0);
+        Cell(Cell* p, bool palloc=false);
         ~Cell();
         void allocate(); //alloc/dealloc of pointed cell (not self), does nothing if no cell
         void deallocate();

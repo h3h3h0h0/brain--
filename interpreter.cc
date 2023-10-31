@@ -6,8 +6,7 @@ using namespace std;
 void BFMInterpreter::_run(istream &in, ostream &out, string prog, bool debug) {
     out<<"RUNNING...\n\n\n";
     //start prep
-    Cell *root = new Cell(nullptr); //the root is a "dummy", not accessible to the user but ensures the while thing works consistently
-    root->allocate(); //prepare the starting cell
+    Cell *root = new Cell(nullptr, true); //the root is a "dummy", not accessible to the user but ensures the while thing works consistently
     Cell *cur = root; //this is the actual memory pointer, root will be kept to ensure all memory is freed no matter where the pointer ends up
     //main loop
     for(int i = 0; i < prog.size(); i++) {
@@ -53,6 +52,10 @@ void BFMInterpreter::_run(istream &in, ostream &out, string prog, bool debug) {
     }
     running = false;
     out<<"\n\n\nFINISHED\n";
+}
+
+BFMInterpreter::BFMInterpreter() {
+    running = false;
 }
 
 BFMInterpreter::~BFMInterpreter() {
