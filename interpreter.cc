@@ -1,10 +1,11 @@
 #pragma once
 #include "interpreter.h"
-#include <iostream>
 
 using namespace std;
 
-void _run(istream &in, ostream &out, string prog, bool debug) {
+void BFMInterpreter::_run(istream &in, ostream &out, string prog, bool debug) {
+    out<<"RUNNING...\n\n\n";
+    //start prep
     Cell *root = new Cell(nullptr); //the root is a "dummy", not accessible to the user but ensures the while thing works consistently
     root->allocate(); //prepare the starting cell
     Cell *cur = root; //this is the actual memory pointer, root will be kept to ensure all memory is freed no matter where the pointer ends up
@@ -49,5 +50,32 @@ void _run(istream &in, ostream &out, string prog, bool debug) {
             default: //print to STDERR
                 if(debug) cerr<<"INVALID OPERATOR: "<<prog[i]<<endl;
         }
+    }
+    running = false;
+    out<<"\n\n\nFINISHED\n";
+}
+
+BFMInterpreter::~BFMInterpreter() {
+    if(running) pthread_cancel(thr);
+}
+void BFMInterpreter::load(string prog) {
+    program = prog;
+}
+void BFMInterpreter::loadFile(string fn) {
+    ifstream f(fn);
+    stringstream buffer;
+    buffer<<f.rdbuf();
+    program = buffer.str();
+}
+void BFMInterpreter::run(istream &in, ostream &out, bool debug=false) {
+    running = true;
+    thread t = thread(_run, in, out, program, debug);
+    thr = t.native_handle();
+    t.detach();
+}
+void BFMInterpreter::stop() {
+    if(running) {
+        pthread_cancel(thr);
+        running = false;
     }
 }
