@@ -16,7 +16,7 @@ class BFMInterpreter {
     void _run(istream &in, ostream &out, string prog, bool debug); //the public run method calls this, which will be threaded
     public:
         BFMInterpreter() = default;
-        ~BFMInterpreter(); //terminates all the threads
+        ~BFMInterpreter(); //calls stop before the program ends
         void load(string prog);
         void loadFile(string fn);
         void run(istream &in, ostream &out, bool debug=false);
