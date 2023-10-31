@@ -1,12 +1,10 @@
-#pragma once
 #include "cell.h"
 
-Cell::Cell(Cell* p, bool palloc=false): parent{p}, value{0}, at{-1} { //at is initialized to -1 to signify that the internal register is empty
+Cell::Cell(Cell* p, bool palloc): parent{p} { //at is initialized to -1 to signify that the internal register is empty
     if(palloc) { //the "outer dummy" which is initialized to 30k
         for(int i = 0; i < presize; i++) {
             _allocate();
         }
-        at = 0;
     }
 } 
 
@@ -27,6 +25,7 @@ void Cell::setValue(char v) {
 
 void Cell::_allocate() {
     mem.push_back(new Cell(this));
+    if(at == -1) at = 0;
 }
 
 void Cell::_deallocate() {
@@ -90,6 +89,11 @@ char Cell::get() {
 void Cell::reset() {
     if(at == -1) return;
     at = 0;
+}
+
+void Cell::set(char v) {
+    if(at == -1) return;
+    mem[at]->setValue(v);
 }
 
 int Cell::getSize() {

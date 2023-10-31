@@ -1,25 +1,19 @@
-#pragma once
 #include <istream>
 #include <ostream>
 #include <iostream>
-#include <thread>
 #include <fstream>
 #include <sstream>
-#include <atomic>
+#include <stack>
 #include "cell.h"
 
 using namespace std;
 
 class BFMInterpreter {
     string program = "";
-    pthread_t thr;
-    std::atomic_bool running;
-    void _run(istream &in, ostream &out, string prog, bool debug); //the public run method calls this, which will be threaded
     public:
-        BFMInterpreter();
-        ~BFMInterpreter(); //calls stop before the program ends
+        BFMInterpreter() = default;
+        ~BFMInterpreter() = default; 
         void load(string prog); //load from string
         void loadFile(string fn);
-        void run(istream &in, ostream &out, bool debug=false);
-        void stop(); //stops currently running thread
+        void run(istream &inp, ostream &outp, bool debug=false);
 };

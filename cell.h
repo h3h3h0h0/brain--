@@ -1,18 +1,17 @@
-#pragma once
 #include <vector>
 
 using namespace std;
 
 class Cell {
-    const int presize = 30000; //prealloc size
+    const int presize = 3000; //prealloc size
     //value stored within cell itself
-    char value;
+    char value = 0;
     //cells considered to be "inside" current cell
     vector<Cell*> mem;
     //parent cell pointer for efficiency
     //nullptr if at top level
     Cell* parent;
-    int at;
+    int at = -1;
     char getValue(); //of self
     void setValue(char v); //of self
     void _allocate(); //these should only be called by the outer container! being outside ensures the pointer is set to the start
@@ -31,7 +30,7 @@ class Cell {
         void operator--(int); //shift left
         //do note that the postfix operators DO NOT have return types!
         char get();
-        void set(char c);
+        void set(char v);
         void reset();
         int getSize();
 };

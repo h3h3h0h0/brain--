@@ -5,7 +5,7 @@ One of the most frustrating things I encountered during my CS courses was recurs
 
 # Features
 - Any program which is coded in the normal language will run correctly (that is, any programs with only the operators <>+-[].,)
-- The main memory starts out with 30000 cells as normal (made using a "dummy" wrapper cell)
+- The main memory starts out with 3000 cells (made using a "dummy" wrapper cell)
 - Each cell now has the ability to allocate additional cells inside it, with the samy byte of memory
 - This is recursive: cells allocated within other cells will have the same ability to allocate cells inside them
   
