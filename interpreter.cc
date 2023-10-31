@@ -68,5 +68,5 @@ void BFMInterpreter::run(istream &in, ostream &out, bool debug) {
         }
     }
     delete root;
-    out<<"\n--------\nFINISHED\n";
+    out<<"\n----------\nFINISHED\n";
 }
