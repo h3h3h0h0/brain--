@@ -13,7 +13,7 @@ void BFMInterpreter::loadFile(string fn) {
 }
 
 void BFMInterpreter::run(istream &in, ostream &out, bool debug) {
-    out<<"RUNNING...\n\n\n";
+    out<<"RUNNING...\n----------\n";
     //start prep
     Cell *root = new Cell(nullptr, true); //the root is a "dummy", not accessible to the user but ensures the while thing works consistently
     Cell *cur = root; //this is the actual memory pointer, root will be kept to ensure all memory is freed no matter where the pointer ends up
@@ -68,5 +68,5 @@ void BFMInterpreter::run(istream &in, ostream &out, bool debug) {
         }
     }
     delete root;
-    out<<"\n\n\nFINISHED\n";
+    out<<"\n--------\nFINISHED\n";
 }
