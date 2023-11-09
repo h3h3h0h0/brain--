@@ -28,7 +28,8 @@ Cell::~Cell() {
 Cell *Cell::clone(Cell *nparent) {
     Cell *temp = new Cell(nparent);
     temp->value = this->value;
-    temp->at = this->at;
+    //reset all the pointers to the leftmost position
+    if(this->at != -1) temp->at = 0; //if nonempty, the leftmost is at 0, if empty, it's at -1 anyway
     for(int i = 0; i < this->mem.size(); i++) {
         temp->mem.push_back(mem[i]->clone(temp)); //clone the memory as well, making sure the parents link to temp instead of this
     }

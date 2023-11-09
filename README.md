@@ -9,6 +9,9 @@ One of the most frustrating things I encountered during my CS courses was recurs
 - Each cell now has the ability to allocate additional cells inside it, with the samy byte of memory
 - This is recursive: cells allocated within other cells will have the same ability to allocate cells inside them
   
+Update 1.1:
+- The interpreter can now dump and load its internal memory. This is useful for debugging programs (though your access would start at the top level in the leftmost position, instead of where you left off).
+  
 # Syntax
 @: allocate an additional byte to the end of the current cell
 
