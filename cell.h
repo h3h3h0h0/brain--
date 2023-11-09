@@ -3,7 +3,7 @@
 using namespace std;
 
 class Cell {
-    const int presize = 3000; //prealloc size
+    static const int presize = 3000; //prealloc size
     //value stored within cell itself
     char value = 0;
     //cells considered to be "inside" current cell
@@ -18,7 +18,10 @@ class Cell {
     void _deallocate();
     public:
         Cell(Cell* p, bool palloc=false);
+        Cell(const Cell &other) = delete; //disabled copy ctor, use clone() instead
+        Cell(Cell &&other); //move ctor is still working tho
         ~Cell();
+        Cell *clone(Cell *nparent=nullptr); //make an exact copy (other than the "root" parent), copy ctor isn't used here because copying the parent is rather tricky
         void allocate(); //alloc/dealloc of pointed cell (not self), does nothing if no cell
         void deallocate();
         Cell *enter(); //you are now able to access the cells in mem, and are currently at the first element

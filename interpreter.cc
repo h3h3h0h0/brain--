@@ -12,10 +12,15 @@ void BFMInterpreter::loadFile(string fn) {
     program = buffer.str();
 }
 
-void BFMInterpreter::run(istream &in, ostream &out, bool debug) {
+Cell *BFMInterpreter::run(istream &in, ostream &out, bool debug, bool memdump, Cell *loadfrom) {
     out<<"RUNNING...\n----------\n";
     //start prep
-    Cell *root = new Cell(nullptr, true); //the root is a "dummy", not accessible to the user but ensures the while thing works consistently
+    Cell *root = nullptr;
+    if(!loadfrom) {
+        root = new Cell(nullptr, true); //the root is a "dummy", not accessible to the user but ensures the while thing works consistently
+    } else {
+        root = loadfrom->clone(); //if a pointer is given to load something, it is cloned and loaded in (very useful for debugging, you can load an exact memory configuration)
+    }
     Cell *cur = root; //this is the actual memory pointer, root will be kept to ensure all memory is freed no matter where the pointer ends up
     stack<int> loops;
     //main loop
@@ -67,6 +72,15 @@ void BFMInterpreter::run(istream &in, ostream &out, bool debug) {
                 if(debug) cerr<<"INVALID OPERATOR: "<<program[i]<<endl;
         }
     }
+    Cell *dump = root->clone();
     delete root;
     out<<"\n----------\nFINISHED\n";
+    if(memdump) {
+        out<<"MEMORY DUMP RETURNED!"<<endl;
+        return dump;
+    } else {
+        out<<"MEMORY CLEARED!"<<endl;
+        delete dump;
+        return nullptr;
+    }
 }

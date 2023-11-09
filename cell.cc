@@ -8,11 +8,31 @@ Cell::Cell(Cell* p, bool palloc): parent{p} { //at is initialized to -1 to signi
     }
 } 
 
+Cell::Cell(Cell &&other): value{other.value}, parent{other.parent}, at{other.at} {
+    other.parent = nullptr;
+    for(int i = 0; i < other.mem.size(); i++) {
+        mem.push_back(other.mem[i]); //directly move the branch pointers to self, do not recursive copy
+    }
+    while(!other.mem.empty()) {
+        other.mem.pop_back(); //we move all the pointers away from other, so it should be empty by the end
+    }
+}
+
 Cell::~Cell() {
     while (!mem.empty()) {
         delete mem.back();
         mem.pop_back();
     }
+}
+
+Cell *Cell::clone(Cell *nparent) {
+    Cell *temp = new Cell(nparent);
+    temp->value = this->value;
+    temp->at = this->at;
+    for(int i = 0; i < this->mem.size(); i++) {
+        temp->mem.push_back(mem[i]->clone(temp)); //clone the memory as well, making sure the parents link to temp instead of this
+    }
+    return temp;
 }
 
 char Cell::getValue() {
