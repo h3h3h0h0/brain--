@@ -28,4 +28,4 @@ Update 1.1:
 ,.: I/O operators, behaves normally
 
 # What's in this repo?
-An interpreter for brain-- written in C++ (due to Stockholm Syndrome).
+An interpreter for brain-- written in C++ (due to Stockholm Syndrome from CS246).
