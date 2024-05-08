@@ -29,7 +29,7 @@ Memory:
   - $11: pointer to the leftmost point in "unused" heap memory, used only if all previous freed memory is gone
   - $12, $13: scratch registers used for memory operations
   - $21, $22: input, output addresses
-
+# Updates
 Update 1.1:
 - The interpreter can now dump and load its internal memory. This is useful for debugging programs (though your access would start at the top level in the leftmost position, instead of where you left off).
 
