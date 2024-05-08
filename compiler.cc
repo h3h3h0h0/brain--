@@ -160,4 +160,5 @@ void BFMCompiler::translate(istream &is, ostream &os) {
         }
         cnt++;
     }
+    os<<"jr $31"<<endl;
 }
