@@ -62,7 +62,7 @@ Todo:
 
 ,. : I/O operators, behaves normally
 
-; : push/pop operator, if it exists and matches the currently pointed cell the value on the stack is popped, otherwise it is pushed
+; : push/pop operator, if it exists and matches the currently pointed cell, the value on the stack is popped, otherwise it is pushed
 
 : : stack access operator ("swap"), it exchanges the top element of the stack with the value in the current cell (even if they are the same, which basically does nothing), if stack is empty it sets the value of the current cell to 0 (might be useful???)
 
