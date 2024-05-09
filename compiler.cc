@@ -1,4 +1,4 @@
-#include <compiler.h>
+#include "compiler.h"
 
 void BFMCompiler::prologue(int sz, ostream &os) {
     //transfer passed memory location to $11, zero out $1 as there are no freed cells yet
@@ -39,7 +39,7 @@ void BFMCompiler::prologue(int sz, ostream &os) {
     os<<"sw $12, 12($1)"<<endl; //set rightmost cell to be left of leftmost cell
     os<<"sw $1, 16($12)"<<endl; //set leftmost cell to be right of rightmost cell
 }
-void alloc_cell(ostream &os) {
+void BFMCompiler::alloc_cell(ostream &os) {
     //allocate the new cell (address in $13)
     os<<"beq $1, $0, 3"<<endl;
     os<<"add $13, $1, $0"<<endl;
@@ -64,7 +64,7 @@ void alloc_cell(ostream &os) {
     os<<"sw $2, 4($13)"<<endl; //link top of added cell to current cell
     os<<"sw $13, 8($13)"<<endl; //set bottom of added cell to self
 }
-void dealloc_cell(ostream &os) {
+void BFMCompiler::dealloc_cell(ostream &os) {
     os<<"lw $3, 8($2)"<<endl; //load the down pointer of the current cell
     os<<"beq $3, $2, 14"<<endl; //if there is nothing to deallocate, skip everything
     os<<"lw $12, 16($3)"<<endl; //load right pointer of below cell
@@ -83,34 +83,34 @@ void dealloc_cell(ostream &os) {
     os<<"sw $1, 16($12)"<<endl; //link to freed list 
     os<<"add $1, $12, $0"<<endl; //make head of freed list
 }
-void increment(ostream &os) {
+void BFMCompiler::increment(ostream &os) {
     os<<"lw $3, 0($2)"<<endl; //get value
     os<<"add $3, $3, $5"<<endl; //add
     os<<"divu $3, $6"<<endl; //byte values, so mod 256
     os<<"mfhi $3"<<endl;
     os<<"sw $3, 0($2)"<<endl; //set value
 }
-void decrement(ostream &os) {
+void BFMCompiler::decrement(ostream &os) {
     os<<"lw $3, 0($2)"<<endl; //get value
     os<<"sub $3, $3, $5"<<endl; //sub
     os<<"divu $3, $6"<<endl; //byte values, so mod 256
     os<<"mfhi $3"<<endl;
     os<<"sw $3, 0($2)"<<endl; //set value
 }
-void loop_begin(int cn, ostream &os) {
+void BFMCompiler::loop_begin(int cn, ostream &os) {
     string lbn = "lb"+cn;
     string len = "le"+cn;
     os<<lbn<<":"<<endl;
     os<<"lw $3, 0($2)"<<endl;
     os<<"beq $3, $0, "<<len<<endl;
 }
-void loop_end(int cn, ostream &os) {
+void BFMCompiler::loop_end(int cn, ostream &os) {
     string lbn = "lb"+cn;
     string len = "le"+cn;
     os<<"bne $3, $0, "<<lbn<<endl;
     os<<len<<":"<<endl;
 }
-void stack_pp(ostream &os=cout) {
+void BFMCompiler::stack_pp(ostream &os) {
     os<<"beq $29, $30, 5"<<endl;
     os<<"lw $7, 0($30)"<<endl;
     os<<"lw $3, 0($2)"<<endl;
@@ -120,7 +120,7 @@ void stack_pp(ostream &os=cout) {
     os<<"sub $30, $30, $14"<<endl; //push the stack
     os<<"sw $3, 0($30)"<<endl;
 }
-void stack_sw(ostream &os=cout) {
+void BFMCompiler::stack_sw(ostream &os) {
     os<<"lis $7"<<endl;
     os<<".word 0"<<endl;
     os<<"beq $29, $30, 1"<<endl; //empty stack means skip initing $7, keep at 0
@@ -129,7 +129,7 @@ void stack_sw(ostream &os=cout) {
     os<<"sw $3, 0($30)"<<endl; //store cell value at stack location
     os<<"sw $7, 0($2)"<<endl; //store stack top at cell value
 }
-void stack_me(ostream &os=cout) {
+void BFMCompiler::stack_me(ostream &os) {
     os<<"sub $3, $29, $30"<<endl;
     os<<"divu $3, $14"<<endl;
     os<<"mflo $3"<<endl;
@@ -138,65 +138,66 @@ void stack_me(ostream &os=cout) {
     os<<"sw $3, 0($2)"<<endl;
 }
 
-void BFMCompiler::translate(istream &is, ostream &os) {
+void BFMCompiler::translate(istream &is, ostream &os, bool debug) {
     char c = '.';
     int cnt = 0;
     stack<int> lstack;
     prologue(ssz, os);
     while(is>>c) {
         switch(c) {
-            case '[':
+            case '[': {
                 loop_begin(cnt, os);
                 lstack.push(cnt); //push where our loop started so we may create the proper label
-            break;
-            case ']':
+            } break;
+            case ']': {
                 assert(!lstack.empty());
                 int pcnt = lstack.top(); //get the line where the corresponding LBRACK is
                 lstack.pop();
                 loop_end(pcnt, os);
-            break;
-            case '.':
+            } break;
+            case '.': {
                 os<<"lw $3, 0($2)"<<endl;
                 os<<"sw $3, 0($22)"<<endl;
-            break;
-            case ',':
+            } break;
+            case ',': {
                 os<<"lw $3, 0($21)"<<endl;
                 os<<"sw $3, 0($2)"<<endl;
-            break;
-            case '+':
+            } break;
+            case '+': {
                 increment(os);
-            break;
-            case '-':
+            } break;
+            case '-': {
                 decrement(os);
-            break;
-            case '@':
+            } break;
+            case '@': {
                 alloc_cell(os);
-            break;
-            case '#':
+            } break;
+            case '#': {
                 dealloc_cell(os);
-            break;
-            case '>':
+            } break;
+            case '>': {
                 os<<"lw $2, 16($2)"<<endl;
-            break;
-            case '<':
+            } break;
+            case '<': {
                 os<<"lw $2, 12($2)"<<endl;
-            break;
-            case '?':
+            } break;
+            case '?': {
                 os<<"lw $2, 8($2)"<<endl;
-            break;
-            case '!':
+            } break;
+            case '!': {
                 os<<"lw $2, 4($2)"<<endl;
-            break;
-            case ';':
+            } break;
+            case ';': {
                 stack_pp(os);
-            break;
-            case ':':
+            } break;
+            case ':': {
                 stack_sw(os);
-            break;
-            case '|':
+            } break;
+            case '|': {
                 stack_me(os);
-            break;
-            default:
+            } break;
+            default: 
+                if(debug) cerr<<"INVALID OPERATOR: "<<c<<endl; //we ignore the character, but print it out if asked
         }
         cnt++;
     }

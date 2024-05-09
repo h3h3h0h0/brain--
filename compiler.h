@@ -20,7 +20,7 @@ class BFMCompiler {
     void stack_me(ostream &os=cout);
     
     public:
-    void translate(istream &is=cin, ostream &os=cout);
+    void translate(istream &is=cin, ostream &os=cout, bool debug=false);
     BFMCompiler(int sssz=3000) {
         ssz = sssz;
     }
