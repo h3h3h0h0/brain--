@@ -69,5 +69,5 @@ Todo:
 | : meter stick operator, replaces the current cell with the length of the stack (mod 256)
 
 # What's in this repo?
-An interpreter for brain-- written in C++ (due to Stockholm Syndrome from CS246).
-(in development) A compiler into MIPS.
+An interpreter for brain-- written in C++.
+A compiler into MIPS, particularly the weird dialect that CS241 uses.
