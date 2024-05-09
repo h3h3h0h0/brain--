@@ -35,7 +35,7 @@ Memory:
   - $12, $13: scratch registers used for memory operations
   - $14: stores the value 4, used for stack addressing
   - $21, $22: input, output addresses
-  - $29
+  - $29, $30: bottom of stack, top of stack
 # Updates
 Update 1.1:
 - The interpreter can now dump and load its internal memory. This is useful for debugging programs (though your access would start at the top level in the leftmost position, instead of where you left off).
