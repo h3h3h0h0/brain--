@@ -15,7 +15,11 @@ void BFMCompiler::prologue(int sz, ostream &os) {
     os<<".word 0xffff0004"<<endl;
     os<<"lis $22"<<endl;
     os<<".word 0xffff000c"<<endl;
+    os<<"lis $14"<<endl;
+    os<<".word 4"<<endl;
     os<<"add $12, $0, $0"<<endl; //zero out the "previous" scratch value for now (will link in a loop later)
+    //init the stack
+    os<<"add $29, $30, $0"<<endl;
     //allocate sz amount of cells, set the pointer to beginning
     os<<"add $2, $11, $0"<<endl;
     os<<"lis $3"<<endl;
@@ -106,6 +110,33 @@ void loop_end(int cn, ostream &os) {
     os<<"bne $3, $0, "<<lbn<<endl;
     os<<len<<":"<<endl;
 }
+void stack_pp(ostream &os=cout) {
+    os<<"beq $29, $30, 5"<<endl;
+    os<<"lw $7, 0($30)"<<endl;
+    os<<"lw $3, 0($2)"<<endl;
+    os<<"bne $3, $7, 2"<<endl;
+    os<<"add $30, $30, $14"<<endl; //pop the stack
+    os<<"beq $0, $0, 2"<<endl;
+    os<<"sub $30, $30, $14"<<endl; //push the stack
+    os<<"sw $3, 0($30)"<<endl;
+}
+void stack_sw(ostream &os=cout) {
+    os<<"lis $7"<<endl;
+    os<<".word 0"<<endl;
+    os<<"beq $29, $30, 1"<<endl; //empty stack means skip initing $7, keep at 0
+    os<<"lw $7, 0($30)"<<endl;
+    os<<"lw $3, 0($2)"<<endl; //get the current cell value
+    os<<"sw $3, 0($30)"<<endl; //store cell value at stack location
+    os<<"sw $7, 0($2)"<<endl; //store stack top at cell value
+}
+void stack_me(ostream &os=cout) {
+    os<<"sub $3, $29, $30"<<endl;
+    os<<"divu $3, $14"<<endl;
+    os<<"mflo $3"<<endl;
+    os<<"divu $3, $6"<<endl; //byte values, so mod 256
+    os<<"mfhi $3"<<endl;
+    os<<"sw $3, 0($2)"<<endl;
+}
 
 void BFMCompiler::translate(istream &is, ostream &os) {
     char c = '.';
@@ -155,6 +186,15 @@ void BFMCompiler::translate(istream &is, ostream &os) {
             break;
             case '!':
                 os<<"lw $2, 4($2)"<<endl;
+            break;
+            case ';':
+                stack_pp(os);
+            break;
+            case ':':
+                stack_sw(os);
+            break;
+            case '|':
+                stack_me(os);
             break;
             default:
         }

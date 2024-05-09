@@ -16,6 +16,8 @@ Cell *BFMInterpreter::run(istream &in, ostream &out, bool debug, bool memdump, C
     out<<"RUNNING...\n----------\n";
     //start prep
     Cell *root = nullptr;
+    stack<int> pstack;
+    int lpstack = 0;
     if(!loadfrom) {
         root = new Cell(nullptr, true); //the root is a "dummy", not accessible to the user but ensures the while thing works consistently
     } else {
@@ -67,6 +69,28 @@ Cell *BFMInterpreter::run(istream &in, ostream &out, bool debug, bool memdump, C
             case '!': {
                 Cell *temp = cur->exit();
                 if(temp) cur = temp;
+            } break;
+            case ';': {
+                if(pstack.empty() || pstack.top() != cur->get()) { //unequal or DNE means push
+                    lpstack++;
+                    pstack.push(cur->get());
+                } else {
+                    lpstack--;
+                    pstack.pop();
+                }
+            } break;
+            case ':': {
+                if(pstack.empty()) { //empty means zero out the contents of the current cell
+                    cur->set(0);
+                } else {
+                    int temp = pstack.top();
+                    pstack.pop();
+                    pstack.push(cur->get());
+                    cur->set(temp);
+                }
+            } break;
+            case '|': {
+                cur->set(lpstack);
             } break;
             default: //print to STDERR
                 if(debug) cerr<<"INVALID OPERATOR: "<<program[i]<<endl;
