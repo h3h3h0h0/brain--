@@ -50,7 +50,7 @@ Todo:
 # Syntax
 @ : allocate an additional byte to the end of the current cell
 
-# : deallocate the last byte from the current cell (if available)
+\# : deallocate the last byte from the current cell (if available)
 
 ? : "inwards" operator, placing the pointer on the first element inside the current cell (if available)
 
