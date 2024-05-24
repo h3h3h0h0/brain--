@@ -49,6 +49,16 @@ Cell *BFMInterpreter::run(istream &in, ostream &out, bool debug, bool memdump, C
                 --(*(cur));
             } break;
             case '[': {
+                // logic for if loop does not execute at all
+                if(cur->get() == 0) {
+                    int ocount = 1;
+                    while(program[i] != ']' || ocount != 0) {
+                        i++;
+                        if(program[i] == '[') ocount++;
+                        else if(program[i] == ']') ocount--;
+                    }
+                    break;
+                }
                 loops.push(i);
             } break;
             case ']': {
